@@ -19,6 +19,7 @@
                         function rejoindreTable(num_port,nb_j_max,nom_table){
                              $(location).attr('href',"/~flucia/client/table/index.php?num_port="+num_port+"&nb_j_max="+nb_j_max+"&nom_table="+nom_table);	    
 			}
+<<<<<<< HEAD
 
 function rafraichir(){
   $.ajax({
@@ -31,12 +32,15 @@ function rafraichir(){
       }
     });
 }
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		//-->
 		</script>
 	</head>
     	<body>
 		<script type="text/javascript">
 		<!--
+<<<<<<< HEAD
 		$(document).ready(function(){
 				    setInterval(function(){
 						  
@@ -49,17 +53,43 @@ function rafraichir(){
 						  rafraichir();						       
 						},2000);
 				  });
+=======
+			$(document).ready(function(){
+				var tr = $("#tables_list").find("tr");
+				$(tr).each(function(index){
+					if(index % 2 == 0){
+						$(tr).eq(index).css("background-color","rgb(30,35,35)");
+					}
+				});
+			});
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		//-->
 		</script>
         	<div class="page">
 			<div class="wrapper">
 				<div id="menu_principal">
+<<<<<<< HEAD
                                         <div style="float:right;margin-top:25px;margin-right:25px;"><input type="button" onclick="javascript:rafraichir()" value="Rafraichir" /></div>
+=======
+		                        <div style="float:right;margin-top:25px;margin-right:25px;"><input type="button" value="Rafraichir" /></div>
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 					<ul id="menu_bar">
 						<li class="menu_pseudo"><?php echo $_SESSION["username"] ?></li>
 						<li><?php echo $_SESSION["money"] ?><Li>
 					</ul>
 					<div id="tables_list">
+<<<<<<< HEAD
+=======
+						<table>
+							<tr>
+								<th>Nom Table</th>
+								<th>Nombre de joueurs</th>							    
+								<th>Mise minimum</th>
+								<th></th>
+							</tr>
+							<?php echo $_SESSION["tables"]; ?>
+						</table>
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 					</div>
 				</div>
 			</div>

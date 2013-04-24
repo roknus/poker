@@ -3,8 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
     	<head>
+<<<<<<< HEAD
 	      	<title>Poker en ligne</title>
       		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+=======
+	      	  <title>Poker en ligne</title>
+      		  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		<link rel="stylesheet" href="/~flucia/style.css" />
 		<link rel="stylesheet" href="/~flucia/jquery-ui-1.10.2.custom/development-bundle/themes/ui-darkness/jquery.ui.all.css" />
 	
@@ -46,9 +51,15 @@
 					<div id="tables_list">
 						<table>
 							<tr>
+<<<<<<< HEAD
 								<th id="nom_table_col">Nom Table</th>
 								<th id="nb_j_col">Nombre de joueurs</th>							    
 								<th id="mise_min_col">Mise minimum</th>
+=======
+								<th>Nom Table</th>
+								<th>Nombre de joueurs</th>							    
+								<th>Mise minimum</th>
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 								<th></th>
 							</tr>
 							<?php echo $_SESSION["tables"]; ?>

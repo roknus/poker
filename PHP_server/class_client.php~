@@ -37,8 +37,11 @@ class Client{
   private $board;
   private $mise;
   private $gagnant;
+<<<<<<< HEAD
   private $perdant;
   private $joueur_quit;
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
   
   public function __construct($username = "",$password = "",$socket = NULL,$money = 0,$email = "", $dob = "", $gender = "", $lname = "", $fname = "", $address = "", $city = "", $zipcode = "", $country = "",$socket_table = NULL, $info_joueurs = "", $info_table = "", $dealer = ""){
     $this->username = $username;
@@ -151,6 +154,7 @@ class Client{
   public function getgagnant(){
     return $this->gagnant;
   }
+<<<<<<< HEAD
   public function getperdant(){
     return $this->perdant;
   }
@@ -158,6 +162,8 @@ class Client{
     return $this->joueur_quit;
   }
   
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 
   public function setusername($name){
     $this->username = $name;
@@ -225,6 +231,7 @@ class Client{
   public function setgagnant($gagnant){
     $this->gagnant = $gagnant;
   }
+<<<<<<< HEAD
   public function setperdant($perdant){
     $this->perdant = $perdant;
   }
@@ -235,6 +242,9 @@ class Client{
   public function add_table_info($table){
     $this->table_info .= $table;
   }
+=======
+
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
   public function add_info_joueurs($mess){
     $this->info_joueurs .= $mess;
   }
@@ -247,10 +257,13 @@ class Client{
   public function add_gagnant($gagnant){
     $this->gagnant .= $gagnant;
   }
+<<<<<<< HEAD
   public function add_perdant($perdant){
     $this->perdant .= $perdant;
   }
   public function add_joueurQuit($joueurQuit){
     $this->joueur_quit .= $joueurQuit;
   }
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 }

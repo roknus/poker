@@ -191,6 +191,7 @@ body{
 	border-collapse:collapse;
 }
 
+<<<<<<< HEAD
 #nom_table_col{
 	width: 190px;
 	height: 30px;
@@ -208,6 +209,8 @@ body{
 	width: 100px;
 }
 
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 #table_page{
 	color: white;
 	width: 860px;

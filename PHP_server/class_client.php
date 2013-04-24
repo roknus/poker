@@ -56,8 +56,11 @@ class Client{
     $this->zipcode = $zipcode;
     $this->country = $country;
 
+<<<<<<< HEAD
     $this->table_info = "";
 
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
     $this->socket_table = $socket_table;
     $this->info_joueurs = $info_joueurs;
     $this->info_table = $info_table;
@@ -78,8 +81,11 @@ class Client{
     $this->zipcode = $zipcode;
     $this->country = $country;
 
+<<<<<<< HEAD
     $this->table_info = "";
 
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
     $this->socket_table = NULL;
     $this->info_joueurs = "";
     $this->info_table = "";
@@ -236,9 +242,12 @@ class Client{
     $this->joueur_quit = $joueurQuit;
   }
 
+<<<<<<< HEAD
   public function add_table_info($table){
     $this->table_info .= $table;
   }
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
   public function add_info_joueurs($mess){
     $this->info_joueurs .= $mess;
   }

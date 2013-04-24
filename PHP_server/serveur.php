@@ -10,9 +10,15 @@
 
 require_once("class_client.php");
 
+<<<<<<< HEAD
 $C_SERVER_HOSTNAME = 'h17';
 $C_SERVER_PORT = '21345';
 $LOCAL_MACHINE_HOSTNAME = 'h16';
+=======
+$C_SERVER_IP = 'localhost';
+$C_SERVER_PORT = '21345';
+$LOCAL_MACHINE_IP = 'localhost';
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 $LOCAL_MACHINE_PORT = '12349';
 
 //Creer un socket public pour toutes requetes en provenance d'un client
@@ -22,7 +28,11 @@ if(false === $socket_public = socket_create(AF_INET,SOCK_STREAM,SOL_TCP)){
  }
 
 //Bind le socket avec un n° de port
+<<<<<<< HEAD
 if(false === socket_bind($socket_public,$LOCAL_MACHINE_HOSTNAME,$LOCAL_MACHINE_PORT)){
+=======
+if(false === socket_bind($socket_public,$LOCAL_MACHINE_IP,$LOCAL_MACHINE_PORT)){
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
   echo "Erreur bind du socket\n";
   exit(1);
  }
@@ -37,9 +47,15 @@ $sockets = array($socket_public);//Tableau contenant le socket public et les soc
 $clients = array();//Tableau des instances de clients
 while(true){
   
+<<<<<<< HEAD
         $read = $sockets;//Descripteur en lecture du select
 	$write = NULL;//Descripteur en ecriture du select
 	$except = NULL;//Descripeur des exception du select
+=======
+	$read = $sockets;  
+	$write = NULL;
+	$except = NULL;
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 
 	//Si il n'y a aucun changement sur les sockets on passe a l'iteration suivante (sinon on met a jour le tableau des sockets)
 	if(socket_select($read,$write,$except,0) < 1){
@@ -61,7 +77,11 @@ while(true){
 		//Si on ne possede pas de socket pour ce client on lui en creer un socket que l'on connecte au serveur C++
 		if(!(isset($clients[$username]))){
 		        $new_socket = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);	      
+<<<<<<< HEAD
 			socket_connect($new_socket,$C_SERVER_HOSTNAME,$C_SERVER_PORT);
+=======
+			socket_connect($new_socket,$C_SERVER_IP,$C_SERVER_PORT);
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 			socket_write($new_socket,$mess);
 			$infoclient = socket_read($new_socket,2047);
 
@@ -73,25 +93,52 @@ while(true){
 
 				$clients[$username] = $new_client;
 				echo "Client crée\n";
+<<<<<<< HEAD
 				socket_write($sockets[$username],"RafrT");
 				socket_close($new_client_socket);
 			}	
 			//Sinon si le serveur C++ ferme le circuit virtuel on renvoie une erreur de connection au client
+=======
+				$table_info = "";
+				while(strtok('&') == "TInfo"){
+				  $nom_table = strtok('&');
+				  $num_port = strtok('&');
+				  $nbJ = strtok('&');
+				  $nbJMax = strtok('&');
+				  $miseMin = strtok('&');
+				  $miseMin /= 100;
+				  $table_info .= "TInfo&".$nom_table.'&'.$num_port.'&'.$nbJ.'&'.$nbJMax.'&'.$miseMin.'&';
+				}
+				$clients[$username]->settable_info($table_info);
+				socket_write($new_client_socket,$table_info);
+				socket_close($new_client_socket);
+			}	
+			//Sinon on ferme la connection avec le serveur C++ et on renvoie une erreur de connection au client
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 			else{
 				socket_close($new_socket);
 				socket_write($new_client_socket,"connection_denied");
 				} 
 		}
+<<<<<<< HEAD
 		//Dans le cas ou l'on possede deja une instance de classe pour ce client
 		else{
 			$requete = strtok('&');
 			while($requete != ""){
 		    
 			        if($requete == $clients[$username]->getpassword()){//Si c'est le mot de passe du client on le reconnecte au menu principal ( par exemple si il ferme la fenetre de jeu via la croix et qu'il reouvre une session de jeu, on ne peut pas recuperer le signal de fermeture )
+=======
+		else{
+			$requete = strtok('&');
+			while($requete != ""){
+
+				if($requete == $clients[$username]->getpassword()){
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 
 				  socket_close($sockets[$username]);
 				  $sockets[$username] = $new_socket = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
 				  $clients[$username]->setsocket($new_socket);
+<<<<<<< HEAD
 				  socket_connect($new_socket,$C_SERVER_HOSTNAME,$C_SERVER_PORT);
 				  socket_write($new_socket,$username.'&'.$clients[$username]->getpassword().'&');
 
@@ -108,6 +155,17 @@ while(true){
 						        socket_write($sockets[$username],"RafrT");							
 							break;
 						}
+=======
+				  socket_connect($new_socket,$C_SERVER_IP,$C_SERVER_PORT);
+				  socket_write($new_socket,$username.'&'.$clients[$username]->getpassword().'&');
+
+				  socket_write($new_client_socket,$clients[$username]->gettable_info());
+
+				  echo 'Connexion de '.$username.'... Client déja connecté... Reconnexion au menu principal';
+				}
+				else{
+					switch($requete){
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 						case "connect_table":
 						{
 						        $num_port = strtok('&');
@@ -115,7 +173,11 @@ while(true){
 							echo 'Deconnexion de '.$username.' au serveur principal ... Connexion à la table '.$num_port." ...\n";
 							$sockets[$username] = $new_socket = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
 							$clients[$username]->setsocket($new_socket);
+<<<<<<< HEAD
 							socket_connect($new_socket,$C_SERVER_HOSTNAME,$num_port);
+=======
+							socket_connect($new_socket,$C_SERVER_IP,$num_port);
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 							socket_write($new_socket,$username);
 							echo "Connexion à la table !\n";
 							break;
@@ -171,7 +233,11 @@ while(true){
 						        socket_close($sockets[$username]);
 							$sockets[$username] = $new_socket = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
 							$clients[$username]->setsocket($new_socket);
+<<<<<<< HEAD
 							socket_connect($new_socket,$C_SERVER_HOSTNAME,$C_SERVER_PORT);
+=======
+							socket_connect($new_socket,$C_SERVER_IP,$C_SERVER_PORT);
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 							socket_write($new_socket,$username.'&'.$clients[$username]->getpassword().'&');
 							break;
 						}
@@ -184,7 +250,11 @@ while(true){
 	else{
 		foreach($sockets as $username=>$socket){
 			if(in_array($socket,$read)){
+<<<<<<< HEAD
 				$mess = socket_read($socket,2047);
+=======
+				$mess = socket_read($socket,255);
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		
 				//Si le descripteur retourne une erreur on cherche sa position dans le tableau de sockets puis on l'enleve
 				if($mess == false){
@@ -199,6 +269,7 @@ while(true){
 					$requete = strtok($mess,'&');
 					while(trim($requete) != ""){
 					  switch(trim($requete)){
+<<<<<<< HEAD
 					                case "TInfo":
 					                {
 							        $nom_table = strtok('&');
@@ -210,6 +281,8 @@ while(true){
 								$clients[$username]->add_table_info("TInfo&".$nom_table.'&'.$num_port.'&'.$nbJ.'&'.$nbJMax.'&'.$miseMin.'&');
 								break;
 					                }
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 					                case "InfoT":
 							{
 								$pot = strtok('&');

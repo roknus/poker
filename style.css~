@@ -191,6 +191,7 @@ body{
 	border-collapse:collapse;
 }
 
+<<<<<<< HEAD
 #nom_table_col{
 	width: 200px;
 	height: 30px;
@@ -204,6 +205,8 @@ body{
 	width: 150px;
 }
 
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 #table_page{
 	color: white;
 	width: 860px;
@@ -271,6 +274,7 @@ body{
 }
 
 .chat{
+<<<<<<< HEAD
 	color: black;
 	height: 150px;
 	width: 310px;
@@ -293,6 +297,12 @@ body{
 .message_chat_systeme{
 	font-size : 13px;
 	color: blue;
+=======
+	height: 150px;
+	width: 320px;
+	background-color: rgb(20,25,25);
+	border: 2px outset black;
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 }
 
 .cards{
@@ -310,7 +320,11 @@ body{
 
 .select{
 	height: 150px;
+<<<<<<< HEAD
 	width: 310px;
+=======
+	width: 320px;
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 	background-color: rgb(20,25,25);
 	color: black;
 	border: 2px outset black;
