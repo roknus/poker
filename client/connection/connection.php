@@ -11,11 +11,7 @@ require_once("../../model/connection_db.php");
  Ce fichier contient ...
  ======================================================================*/ 
 
-<<<<<<< HEAD
 $LOCAL_MACHINE = 'h16';
-=======
-$LOCAL_MACHINE = 'localhost';
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 $LOCAL_MACHINE_PORT = 12349;
 
 $socket_public = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
@@ -33,7 +29,6 @@ else{
 }
 
 socket_write($socket_public,$username."&".$password."&");
-<<<<<<< HEAD
 $res = socket_read($socket_public,255);
 if($res != 'connection_denied' AND !(isset($_SESSION["username"]))){
   activate_session($username);
@@ -42,36 +37,6 @@ if($res != 'connection_denied'){
   $_SESSION["server_hostname"] = $LOCAL_MACHINE;
   echo 'connection_accepted';
  }
-=======
-$res = socket_read($socket_public,2047);
-if($res != 'connection_denied' AND !(isset($_SESSION["username"]))){
-	activate_session($username);
- }
-if($res != 'connection_denied'){
-	$mess = strtok($res,'&');
-	$tables = "";
-	while($mess != ""){
-	  echo $mess;
-	  $tables .= '<tr><td>';
-	  $nom_table = strtok('&');
-	  $tables .= $nom_table.'</td>';
-	  $num_port = strtok('&');
-	  $tables .= '
-             <td>'.strtok('&').' / ';
-	  $nb_j_max = strtok('&');
-	  $tables .= $nb_j_max.'</td>
-             <td>'.number_format(strtok('&'),2,'.',' ').'</td>
-             <td><input type="button" value="Rejoindre" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.",'".$nom_table."')\"/></td>
-          </tr>
-         ";
-	  $mess = strtok('&');
-	}	
-	$_SESSION["tables"] = $tables;
-	$_SESSION["server_hostname"] = $LOCAL_MACHINE;
-	echo 'connection_accepted';
-	
-}
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
  else{
    echo $res;
    socket_close($socket_public);

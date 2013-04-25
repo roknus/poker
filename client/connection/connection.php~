@@ -14,7 +14,7 @@ require_once("../../model/connection_db.php");
 <<<<<<< HEAD
 $LOCAL_MACHINE = 'h16';
 =======
-$LOCAL_MACHINE = 'h13';
+$LOCAL_MACHINE = 'localhost';
 >>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 $LOCAL_MACHINE_PORT = 12349;
 
@@ -33,9 +33,9 @@ else{
 }
 
 socket_write($socket_public,$username."&".$password."&");
-$res = socket_read($socket_public,2047);
-if($res != 'connection_denied' AND !(isset($_SESSION["username"]))){
 <<<<<<< HEAD
+$res = socket_read($socket_public,255);
+if($res != 'connection_denied' AND !(isset($_SESSION["username"]))){
   activate_session($username);
  }
 if($res != 'connection_denied'){ 
@@ -43,6 +43,8 @@ if($res != 'connection_denied'){
   echo 'connection_accepted';
  }
 =======
+$res = socket_read($socket_public,2047);
+if($res != 'connection_denied' AND !(isset($_SESSION["username"]))){
 	activate_session($username);
  }
 if($res != 'connection_denied'){

@@ -3,13 +3,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
     	<head>
-<<<<<<< HEAD
 	      	<title>Poker en ligne</title>
       		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-=======
-	      	  <title>Poker en ligne</title>
-      		  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		<link rel="stylesheet" href="/~flucia/style.css" />
 		<link rel="stylesheet" href="/~flucia/jquery-ui-1.10.2.custom/development-bundle/themes/ui-darkness/jquery.ui.all.css" />
 	
@@ -24,12 +19,41 @@
                         function rejoindreTable(num_port,nb_j_max,nom_table){
                              $(location).attr('href',"/~flucia/client/table/index.php?num_port="+num_port+"&nb_j_max="+nb_j_max+"&nom_table="+nom_table);	    
 			}
+<<<<<<< HEAD
+
+function rafraichir(){
+  $.ajax({
+    url : "/~flucia/client/menu_principal/refresh_table.php",
+	complete : function(xhr,result){
+	if(result != "success") return;
+	var response = xhr.responseText;
+	$("#tables_list").empty();
+	$(response).appendTo("#tables_list");
+      }
+    });
+}
+=======
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		//-->
 		</script>
 	</head>
     	<body>
 		<script type="text/javascript">
 		<!--
+<<<<<<< HEAD
+		$(document).ready(function(){
+				    setInterval(function(){
+						  
+						  var tr = $("#tables_list").find("tr");
+						  $(tr).each(function(index){
+							       if(index % 2 == 0){
+								 $(tr).eq(index).css("background-color","rgb(30,35,35)");
+							       }
+							     });
+						  rafraichir();						       
+						},2000);
+				  });
+=======
 			$(document).ready(function(){
 				var tr = $("#tables_list").find("tr");
 				$(tr).each(function(index){
@@ -38,32 +62,34 @@
 					}
 				});
 			});
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 		//-->
 		</script>
         	<div class="page">
 			<div class="wrapper">
 				<div id="menu_principal">
+<<<<<<< HEAD
+                                        <div style="float:right;margin-top:25px;margin-right:25px;"><input type="button" onclick="javascript:rafraichir()" value="Rafraichir" /></div>
+=======
 		                        <div style="float:right;margin-top:25px;margin-right:25px;"><input type="button" value="Rafraichir" /></div>
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 					<ul id="menu_bar">
 						<li class="menu_pseudo"><?php echo $_SESSION["username"] ?></li>
 						<li><?php echo $_SESSION["money"] ?><Li>
 					</ul>
 					<div id="tables_list">
+<<<<<<< HEAD
+=======
 						<table>
 							<tr>
-<<<<<<< HEAD
-								<th id="nom_table_col">Nom Table</th>
-								<th id="nb_j_col">Nombre de joueurs</th>							    
-								<th id="mise_min_col">Mise minimum</th>
-=======
 								<th>Nom Table</th>
 								<th>Nombre de joueurs</th>							    
 								<th>Mise minimum</th>
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 								<th></th>
 							</tr>
 							<?php echo $_SESSION["tables"]; ?>
 						</table>
+>>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
 					</div>
 				</div>
 			</div>
