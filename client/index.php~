@@ -28,7 +28,7 @@ session_start();
 			complete : function(xhr,result){
 				if(result != "success") return; 
 				var response = xhr.responseText;
-				if(response == "connection_accepted"){
+				if(response != "connection_denied"){
 					$(location).attr('href',"/~flucia/client/menu_principal/index.php");
 				}
 				else{

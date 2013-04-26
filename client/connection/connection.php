@@ -30,14 +30,12 @@ else{
 
 socket_write($socket_public,$username."&".$password."&");
 $res = socket_read($socket_public,255);
-if($res != 'connection_denied' AND !(isset($_SESSION["username"]))){
-  activate_session($username);
- }
-if($res != 'connection_denied'){ 
-  $_SESSION["server_hostname"] = $LOCAL_MACHINE;
-  echo 'connection_accepted';
- }
- else{
-   echo $res;
-   socket_close($socket_public);
- }
+
+if($res == 'connection_accepted' AND !(isset($_SESSION["username"]))){
+        activate_session($username);
+	$_SESSION["server_hostname"] = $LOCAL_MACHINE;
+}
+
+echo $res;
+socket_close($socket_public);
+

@@ -53,7 +53,7 @@ while(true){
 		$new_client_socket = socket_accept($socket_public);
 		$mess = socket_read($new_client_socket,255);
 		
-		if(!strstr($mess,'refresh')){ // A enlever !
+		if(!strstr($mess,'refresh') AND !strstr($mess,'rafraichir_menu_principal')){ // A enlever !
 		  echo "\nMess = ".$mess."\n";
 		}
 
@@ -61,8 +61,13 @@ while(true){
        
 		//Si on ne possede pas de socket pour ce client on lui en creer un socket que l'on connecte au serveur C++
 		if(!(isset($clients[$username]))){
-		        $new_socket = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);	      
-			socket_connect($new_socket,$C_SERVER_HOSTNAME,$C_SERVER_PORT);
+		        $new_socket = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
+			if(false === socket_connect($new_socket,$C_SERVER_HOSTNAME,$C_SERVER_PORT)){
+			  echo "Impossible de joindre le serveur principal\n";
+			  socket_write($new_client_socket,"Disconnected");
+			  socket_close($new_client_socket);
+			  continue;
+			}			
 			socket_write($new_socket,$mess);
 			$infoclient = socket_read($new_socket,2047);
 
@@ -73,14 +78,17 @@ while(true){
 				$new_client = new Client(strtok($infoclient,'&'),$password,$new_socket,strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'));
 
 				$clients[$username] = $new_client;
-				echo "Client crée\n";
+				echo "Connexion de ".$username." établie avec le serveur principal\n";
+				socket_write($new_client_socket,"connection_accepted");
 				socket_write($sockets[$username],"RafrT");
 				socket_close($new_client_socket);
 			}	
 			//Sinon si le serveur C++ ferme le circuit virtuel on renvoie une erreur de connection au client
 			else{
+				echo "Connexion de ".$username." refusé avec le serveur principal\n";			  
 				socket_close($new_socket);
 				socket_write($new_client_socket,"connection_denied");
+				socket_close($new_client_socket);
 				} 
 		}
 		//Dans le cas ou l'on possede deja une instance de classe pour ce client
@@ -98,7 +106,7 @@ while(true){
 
 				  socket_write($new_client_socket,"connection_accepted");
 
-				  echo 'Connexion de '.$username.'... Client déja connecté... Reconnexion au menu principal';
+				  echo 'Connexion de '.$username.'... Client déja connecté... Reconnexion au serveur principal';
 				}
 				else{//Sinon on ecupere la requete du client et on l'applique
 					switch($requete){
@@ -132,32 +140,7 @@ while(true){
 						}
 						case "refresh":
 						{
-							$infoT = $clients[$username]->getinfo_table();
-							$infoJ = $clients[$username]->getinfo_joueurs();
-							$infoD = $clients[$username]->getdealer();
-							$infoC = $clients[$username]->getcartes();
-							$infoM = $clients[$username]->getmise();
-							$infoB = $clients[$username]->getboard();
-							$infoG = $clients[$username]->getgagnant();
-							$infoP = $clients[$username]->getperdant();
-							$infoQ = $clients[$username]->getjoueurQuit();
-							$infoT .= $infoJ .= $infoM .= $infoD .= $infoC .= $infoB .= $infoG .= $infoP .= $infoQ;
-							if($infoT !== ""){
-								echo $infoT."\n";
-								socket_write($new_client_socket,$infoT);
-								$clients[$username]->setinfo_joueurs("");
-								$clients[$username]->setinfo_table("");	
-								$clients[$username]->setdealer("");
-								$clients[$username]->setcartes("");
-								$clients[$username]->setmise("");
-								$clients[$username]->setboard("");
-								$clients[$username]->setgagnant("");
-								$clients[$username]->setperdant("");
-								$clients[$username]->setjoueurQuit("");
-							}
-							else{					  
-								socket_write($new_client_socket,"RAS");
-							}
+						        socket_write($new_client_socket,$clients[$username]->refresh());
 							break;
 						}
 				             	case "miser":
@@ -165,6 +148,30 @@ while(true){
 						        $mise = strtok('&');	
 							$mise *= 100;						     
 							socket_write($clients[$username]->getsocket(),'Miser&'.$mise.'&');
+							break;
+						}
+					        case "Tchat":
+						{						   		      
+							$message = $username.':'.strtok('&');
+							str_replace("{esp}","&",$message);
+							$taille = strlen($message);
+							echo "Tchat&".$taille.'&'.$message."\n";							;
+							socket_write($clients[$username]->getsocket(),"Tchat&".$taille.'&'.$message);
+							break;
+						}
+					        case "Absen":
+						{
+						        socket_write($sockets[$username],"Absen&");
+							break;
+						}
+					        case "Retou":
+						{
+						        socket_write($sockets[$username],"Retou&");
+							break;
+						}
+					        case "QuitT":
+						{
+						        socket_write($sockets[$username],"QuitT&");
 							break;
 						}
 					        case "quit_table":
@@ -195,9 +202,11 @@ while(true){
 					}
 					socket_close($socket);
 				}
-				else{				  
-					echo "Nouveau message recu du serveur c++ sur le socket ".$username." : \"".$mess."\"\n";
-					$requete = strtok($mess,'&');
+				else{	
+					$requete = strtok($mess,'&');	
+					if($requete != "TInfo"){ // A enlever
+					  echo "Nouveau message recu du serveur c++ sur le socket ".$username." : \"".$mess."\"\n";
+					}
 					while(trim($requete) != ""){
 					  switch(trim($requete)){
 					                case "TInfo":
@@ -268,12 +277,31 @@ while(true){
 								$clients[$username]->add_mise('Miser&'.$place.'&'.$mise.'&'.$suivant.'&');
 								break;
 							}
+					                case "Tchat":
+							{
+ 							        $taille = strtok('&');
+								$pseudo = strtok(':');
+								$message = strtok('&');
+								$clients[$username]->add_message_chat('Tchat&'.$pseudo.'&'.$message.'&');
+								break;
+							}
 					                case "Milie":
 							{
 							        $valeur = strtok('&');
 								$suivant = strtok('&');
 								$clients[$username]->add_carte_board('Milie&'.$valeur.'&'.$suivant.'&');
 								break;
+							}
+					                case "Absen":
+							{
+							       $place = strtok('&');
+							       $clients[$username]->add_absent('Absen&'.$place.'&');
+							       break;
+							}
+					                case "Retou":
+							{
+							       $place = strtok('&');
+							       break;
 							}
 				                        case "Gagna":
 					                {

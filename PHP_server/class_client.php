@@ -27,6 +27,7 @@ class Client{
 
   //information relative au menu principal
   private $table_info;
+  private $message_chat;
 
   //informations relative à la table
   private $socket_table;
@@ -38,6 +39,7 @@ class Client{
   private $mise;
   private $gagnant;
   private $perdant;
+  private $absent;
   private $joueur_quit;
   
   public function __construct($username = "",$password = "",$socket = NULL,$money = 0,$email = "", $dob = "", $gender = "", $lname = "", $fname = "", $address = "", $city = "", $zipcode = "", $country = "",$socket_table = NULL, $info_joueurs = "", $info_table = "", $dealer = ""){
@@ -161,6 +163,12 @@ class Client{
   public function getjoueurQuit(){
     return $this->joueur_quit;
   }
+  public function getabsent(){
+    return $this->absent;
+  }
+  public function getmessage_chat(){
+    return $this->message_chat;
+  }
   
 
   public function setusername($name){
@@ -235,6 +243,12 @@ class Client{
   public function setjoueurQuit($joueurQuit){
     $this->joueur_quit = $joueurQuit;
   }
+  public function setabsent($absent){
+    $this->absent = $absent;
+  }
+  public function setmessage_chat($message){
+    $this->message_chat = $message;
+  }
 
   public function add_table_info($table){
     $this->table_info .= $table;
@@ -256,5 +270,45 @@ class Client{
   }
   public function add_joueurQuit($joueurQuit){
     $this->joueur_quit .= $joueurQuit;
+  }
+  public function add_absent($absent){
+    $this->absent .= $absent;
+  }
+  public function add_message_chat($message){
+    $this->message_chat .= $message;
+  }
+
+  public function refresh(){
+    
+    $infoT = $this->getinfo_table();
+    $infoJ = $this->getinfo_joueurs();
+    $infoD = $this->getdealer();
+    $infoC = $this->getcartes();
+    $infoM = $this->getmise();
+    $infoB = $this->getboard();
+    $infoG = $this->getgagnant();
+    $infoP = $this->getperdant();
+    $infoQ = $this->getjoueurQuit();
+    $infoA = $this->getabsent();
+    $infoCh = $this->getmessage_chat();
+    $infoT .= $infoJ .= $infoA .= $infoB .= $infoM .= $infoD .= $infoC .= $infoG .= $infoP .= $infoQ .= $infoCh;
+    if($infoT !== ""){
+      echo $infoT."\n";      
+      $this->info_joueurs = "";
+      $this->info_table = "";	
+      $this->dealer = "";
+      $this->cartes = "";
+      $this->mise = "";
+      $this->board = "";
+      $this->gagnant = "";
+      $this->perdant = "";
+      $this->absent = "";
+      $this->joueur_quit = "";
+      $this->message_chat = "";
+      return  $infoT;
+    }
+    else{					  
+      return "RAS";
+    }
   }
 }

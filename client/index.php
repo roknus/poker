@@ -28,12 +28,18 @@ session_start();
 			complete : function(xhr,result){
 				if(result != "success") return; 
 				var response = xhr.responseText;
-				if(response != "connection_denied"){
+				if(response == "connection_accepted"){
 					$(location).attr('href',"/~flucia/client/menu_principal/index.php");
+				}				
+				else if(response == "connection_denied"){
+					$("#log_in_error").html("Identifiants incorrect");
+				}
+				else if(response == "Disconnected"){
+           				alert("Impossible de joindre le serveur principal");
 				}
 				else{
-					$("#log_in_error").html("Identifiants incorrect");
-				}				
+                			alert("Impossible de joindre le serveur de connexion");
+				}
 			}				
 		});
 		
@@ -44,7 +50,7 @@ session_start();
 		
 	</head>
 	<body>
-	<div class="page">   
+	        <div class="page">   
 		<?php
 			if(isset($_SESSION["username"])){?>
 				<script type="text/javascript">
@@ -52,52 +58,36 @@ session_start();
 					logIn();
 				//-->
 				</script>
-					<div>
-						<table class="loading">
-							<tr>
-								<td>Chargement ...</td>
-							</tr>
-							<tr>
-								<td><img src="/~flucia/client/loading.gif" /></td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</body>
-		</htmL>
-
-		<?php
-		}
-			else{?>
-				<div class="wrapper">
-					<div style="text-align:center;"><img src="/~flucia/log_in/connexion.jpg"/></div>
-					<table class="tborder">
-						<tr>
-							<td class="ttitle"><strong>Connexion</strong></td>
-						</tr>
-						<tr>
-							<td class="panelsurround" align="center">
-								<div class="panel">
-									<form name="monform" action="javascript:logIn()">
-										<table>
-											<tr>
-												<td>Nom d'utilisateur : </td>
-												<td><input id="log_in_username" type="text" name="username" /></td>
-												<td><strong><span id="log_in_error"></span> </strong></td>
-											</tr>
-											<tr>
-												<td style="text-align:right">Mot de passe : </td>
-												<td><input id="log_in_password" type="password" name="password" /></td>
-												<td><input type="submit" value="Se connecter" /></td>
-											</tr>
-										</table>
-									</form>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</body>
-		</htmL>
-<?php
- }
+		<?php } ?>
+                        <div class="wrapper">
+      		        	<div style="text-align:center;"><img src="/~flucia/log_in/connexion.jpg"/></div>
+       			        	<table class="tborder">
+       				        	<tr>
+       				        		<td class="ttitle"><strong>Connexion</strong></td>
+       			        		</tr>
+       			        		<tr>
+       				        		<td class="panelsurround" align="center">
+       					        		<div class="panel">
+       							        	<form name="monform" action="javascript:logIn()">
+       								        	<table>
+       									        	<tr>
+       					                                                	<td>Nom d&rsquo;utilisateur : </td>
+       										        	<td><input id="log_in_username" type="text" name="username" /></td>
+       										        	<td><strong><span id="log_in_error"></span> </strong></td>
+       									        	</tr>
+       									         	<tr>
+       										        	<td style="text-align:right">Mot de passe : </td>
+       										        	<td><input id="log_in_password" type="password" name="password" /></td>
+       									         		<td><input type="submit" value="Se connecter" /></td>
+       									        	</tr>
+       								        	</table>
+       						         		</form>
+       				    		        	</div>
+       				          		</td>
+       				        	</tr>
+       			        	</table>
+       		        	</div>
+       	             	</div>
+	        </div>
+      	</body>
+</html>

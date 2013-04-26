@@ -80,8 +80,7 @@ function connexionClient(){
              
 function choixPlace(place){
 	$('.select').empty();
-	$('<input type="number" id="valeur_cave"></div>').appendTo('.select');
-	$('<input type="button" value="Envoyer" onclick="javascript:ajaxChoixPlace('+place+')" />').appendTo('.select');
+	$('<input type="number" id="valeur_cave"><input type="button" value="Envoyer" onclick="javascript:ajaxChoixPlace('+place+')" />').appendTo('.select');
 	$('<div id="cave"></div>').prependTo('.select').slider({
 		min : mise_min,
 		max : <?php echo $_SESSION["money"]; ?>,
@@ -92,6 +91,50 @@ function choixPlace(place){
 		},
 		stop : function (event){
 			$("#valeur_cave").val($(this).slider("value"));
+		}
+	});
+}
+
+function quitterTableNext(){
+	$.ajax({
+		url : "/~flucia/client/table/quitte_table_next.php",
+		complete : function(xhr,result){
+			if(result != "success") return;
+			var response = xhr.responseText;
+		}
+	});
+}
+
+function absent(){
+	$.ajax({
+		url : "/~flucia/client/table/absent.php",
+		complete : function(xhr,result){
+			if(result != "success") return;
+			var response = xhr.responseText;
+		}
+	});
+}
+
+function retour_en_jeu(){
+	$.ajax({
+		url : "/~flucia/client/table/retour_en_jeu.php",
+		complete : function(xhr,result){
+			if(result != "success") return;
+			var response = xhr.responseText;
+		}
+	});
+}
+
+function envoyer_message(message){     
+	message = message.replace(/&/g,"{esp}");
+        var data = { chat : message };
+  	$.ajax({
+		url : "/~flucia/client/table/chat.php",
+	        data : data,
+		complete : function(xhr,result){
+			if(result != "success") return;
+			var response = xhr.responseText;
+			$("#chat_input").val("");
 		}
 	});
 }
@@ -138,13 +181,13 @@ function refresh(){
 						i = i+7; // On deplace le curseur pour la boucle qui suit							    
 					} 
 					while(res[i] == 'NewJo'){
-						place = res[i+1];
+					        place = parseInt(res[i+1]);
 						joueurs[place][0] = res[i+2];
 						joueurs[place][1] = parseFloat(res[i+3]); //Jetons
 						joueurs[place][2] = parseFloat(res[i+4]); //Mise
 						joueurs[place][3] = res[i+5];
 						
-						ajout_message_systeme(joueurs[place][0]+" vient de s'asseoir à la place n°"+place+".");
+						ajout_message_systeme(joueurs[place][0]+" vient de s'asseoir à la place n°"+(place+1)+".");
 
 						if(joueurs[place][3] == 't'){
 							joueurs[place][2] = 'COUCHER';
@@ -162,7 +205,7 @@ function refresh(){
 						}
 						if( joueurs[place][0] == <?php echo '"'.$_SESSION["username"].'"'; ?> ){
 							$('.select').empty();
-							$('.select').html('<table><tr><td><input type="button" value="Parole" onclick="javascript:miser(0)"/></td><td><input type="button" value="Suivre" onclick="javascript:miser(1)"/></td><td><input type="button" value="Relancer" onclick="javascript:miser(2)"/></td><td><input type="button" value="Coucher" onclick="javascript:miser(-1)"/></td></tr><tr><td><a href="../menu_principal">Quitter la table</a></td></tr></table><div id="relance_div" style="display:none"><div id="slider"></div><div id="valeur_relance"></div></div>');
+							$('.select').html('<table><tr><td><input type="button" value="Parole" onclick="javascript:miser(0)"/></td><td><input type="button" value="Suivre" onclick="javascript:miser(1)"/></td><td><input type="button" value="Relancer" onclick="javascript:miser(2)"/></td><td><input type="button" value="Coucher" onclick="javascript:miser(-1)"/></td></tr><tr><td><a href="javascript:quitterTableNext()">Quitter la table prochain tour</a></td></tr></table><div id="relance_div" style="display:none"><div id="slider"></div><div id="valeur_relance"></div></div>');
 						}
 						var j;
 						nb_joueurs = nb_joueurs +1;
@@ -215,6 +258,9 @@ function refresh(){
 							$("#player"+suivant+" #timer").html(time-1);
 							time= time-1;
 							if(time == 0){
+							        if(ma_place == suivant){
+								  absent();							    
+								}
 								clearInterval(interval);
 								$("#player"+suivant+" #timer").html("");
 								time = 21;
@@ -222,6 +268,17 @@ function refresh(){
 						},1000);
 					   
 						i = i+4;
+					}
+					if(res[i] == "Tchat"){
+					  var pseudo = res[i+1];
+					  var message = res[i+2];
+					   
+					  
+					  $('<span class="message_chat"><strong>['+pseudo+']</strong></span><span class="message_chat"> : '+message+'<br/></span>').appendTo('#chat_box');
+					  var scroll = $("#chat_box").scrollTop();
+					  $("#chat_box").scrollTop(scroll +100);
+					  
+					  i = i+3;
 					}
 					if(res[i] == "Deale"){
 						clearInterval(interval);
@@ -274,7 +331,7 @@ function refresh(){
 							time= time-1;
 							if(time == 0){
 							  if(ma_place == suivant){
-							    miser(0);							    
+							    absent();							    
 							  }
 								clearInterval(interval);
 								$("#player"+placePB+" #timer").html("");
@@ -316,6 +373,9 @@ function refresh(){
 							$("#player"+suivant+" #timer").html(time-1);
 							time= time-1;
 							if(time == 0){
+							        if(ma_place == suivant){
+								  absent();;							    
+								}
 								clearInterval(interval);
 								$("#player"+suivant+" #timer").html("");
 								time = 21;
@@ -323,17 +383,24 @@ function refresh(){
 						},1000);
 						i = i+2;
 					}
-					if(res[i] == "Gagna"){
+					if(res[i] == "Gagna"){								  
+						clearInterval(interval);
 						var place_gagnant = res[i+1];
 						var new_jetons = parseFloat(res[i+2]);
 									  
 						ajout_message_systeme(joueurs[place_gagnant][0]+" a gagné "+(new_jetons - joueurs[place_gagnant][1])+".");
-
+ 
 						joueurs[place_gagnant][1] = new_jetons;
 						$('#player'+place_gagnant+' #jetons').html(joueurs[place_gagnant][1]);
+						$('#player'+place_gagnant+' #mise').html("COUCHER");
+						$("#carte1").attr('src','cards/def.png');
+						$("#carte2").attr('src','cards/def.png');
+						$(".pot").html("0");
+						
 						i = i+3;
 					}
-					if(res[i] == "Perdu"){
+					if(res[i] == "Perdu"){								  
+						clearInterval(interval);
 						var place_perdant = res[i+1];
 						var new_jetons = parseFloat(res[i+2]);
 
@@ -367,11 +434,26 @@ function refresh(){
 						  for(j=0;j<10;j++){
 						    if(joueurs[j][0] == ""){
 						      $("#player"+j).html('<div id="select_seat" onclick="javascript:choixPlace('+j+')"><strong>Choisissez votre place</strong></div>');
+						      $(".select").empty();
 						    }
 						  }
 						}						
 
-						i = i+2;
+						i = i+1;
+					}
+					if(res[i] == "Absen"){
+					  var place = res[i+1];
+				          
+					  ajout_message_systeme(joueurs[place][0]+" est absent.");
+
+					  $("#player"+place+" div").attr("background-color","red");
+
+					  if( place == ma_place){
+					    alert("Pouquoi t'as pas joué petit con !");
+					  }
+					  
+					  i = i+2;
+					  
 					}
 					else{
 						i = i+1;
@@ -439,7 +521,7 @@ function ajax_mise(mise){
 function ajout_message_systeme(message){
   $('<span class="message_systeme"><strong>[Systeme]</strong></span><span class="message_chat_systeme"> : '+message+'<br/></span>').appendTo('#chat_box');
   var scroll = $("#chat_box").scrollTop();
-  $("#chat_box").scrollTop(scroll +20);
+  $("#chat_box").scrollTop(scroll +100);
 }
 
         	</script>
@@ -456,7 +538,10 @@ function ajout_message_systeme(message){
 			});
 		//-->
 		</script>
-
+		<div id="top_menu_table">
+                       <?php echo $nom_table; ?>
+		       <div style="text-align:right;margin-right:10px;"><a href="javascript:retour_en_jeu()">Retour</a><a href="../menu_principal"><img src="close_icone.png" height="25" width="25"/></a></div>
+                </div>
 		<div id="table_page">
 			<div>
 				<table>
@@ -476,7 +561,7 @@ function ajout_message_systeme(message){
 									   
 									<?php player_block(9,$nb_j_max);?>
 									
-									<td><div class="pot_div"><span><?php echo $nom_table; ?><br/>Pot</span><br/><span class="pot"></span></div></td>
+									<td><div class="pot_div"><span>Pot</span><br/><span class="pot"></span></div></td>
 									<td colspan="3" class="board">
 										<table id="board">
 											<tr>												   
@@ -520,8 +605,9 @@ function ajout_message_systeme(message){
 					<tr>
 						<td>
 							<div class="chat">
-                                                            <div id="chat_box"></div>
-							    <input type="text" size="36" />
+                                                            <div id="chat_box"></div>							    
+							    <input id="chat_input" type="text" size="25" />
+                                                            <input type="button" onclick="javascript:envoyer_message($('#chat_input').val())" value="Envoyer" />                                                            
 							</div>
 						</td>
 						<td>

@@ -38,6 +38,7 @@ class Client{
   private $mise;
   private $gagnant;
   private $perdant;
+  private $absent;
   private $joueur_quit;
   
   public function __construct($username = "",$password = "",$socket = NULL,$money = 0,$email = "", $dob = "", $gender = "", $lname = "", $fname = "", $address = "", $city = "", $zipcode = "", $country = "",$socket_table = NULL, $info_joueurs = "", $info_table = "", $dealer = ""){
@@ -56,11 +57,8 @@ class Client{
     $this->zipcode = $zipcode;
     $this->country = $country;
 
-<<<<<<< HEAD
     $this->table_info = "";
 
-=======
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
     $this->socket_table = $socket_table;
     $this->info_joueurs = $info_joueurs;
     $this->info_table = $info_table;
@@ -81,11 +79,8 @@ class Client{
     $this->zipcode = $zipcode;
     $this->country = $country;
 
-<<<<<<< HEAD
     $this->table_info = "";
 
-=======
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
     $this->socket_table = NULL;
     $this->info_joueurs = "";
     $this->info_table = "";
@@ -167,6 +162,9 @@ class Client{
   public function getjoueurQuit(){
     return $this->joueur_quit;
   }
+  public function getabsent(){
+    return $this->absent;
+  }
   
 
   public function setusername($name){
@@ -241,13 +239,13 @@ class Client{
   public function setjoueurQuit($joueurQuit){
     $this->joueur_quit = $joueurQuit;
   }
+  public function setabsent($absent){
+    $this->absent = $absent;
+  }
 
-<<<<<<< HEAD
   public function add_table_info($table){
     $this->table_info .= $table;
   }
-=======
->>>>>>> 8fce1a301af4a3a49741dadcaa8313c7e30a1170
   public function add_info_joueurs($mess){
     $this->info_joueurs .= $mess;
   }
@@ -265,5 +263,40 @@ class Client{
   }
   public function add_joueurQuit($joueurQuit){
     $this->joueur_quit .= $joueurQuit;
+  }
+  public function add_absent($absent){
+    $this->absent .= $absent;
+  }
+
+  public function refresh(){
+    
+    $infoT = $this->getinfo_table();
+    $infoJ = $this->getinfo_joueurs();
+    $infoD = $this->getdealer();
+    $infoC = $this->getcartes();
+    $infoM = $this->getmise();
+    $infoB = $this->getboard();
+    $infoG = $this->getgagnant();
+    $infoP = $this->getperdant();
+    $infoQ = $this->getjoueurQuit();
+    $infoA = $this->getabsent();
+    $infoT .= $infoJ .= $infoA .= $infoB .= $infoM .= $infoD .= $infoC .= $infoG .= $infoP .= $infoQ;
+    if($infoT !== ""){
+      echo $infoT."\n";      
+      $this->info_joueurs = "";
+      $this->info_table = "";	
+      $this->dealer = "";
+      $this->cartes = "";
+      $this->mise = "";
+      $this->board = "";
+      $this->gagnant = "";
+      $this->perdant = "";
+      $this->absent = "";
+      $this->joueur_quit = "";
+      return  $infoT;
+    }
+    else{					  
+      return "RAS";
+    }
   }
 }
