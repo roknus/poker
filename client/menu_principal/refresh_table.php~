@@ -36,8 +36,8 @@ while($mess != ""){
   $tables .= '<td>'.strtok('&').' / ';
   $nb_j_max = strtok('&');
   $tables .= $nb_j_max.'</td><td>'.number_format(strtok('&'),2,'.',' ').'</td>
-    <td class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.','.$nom_table.')">Rejoindre</td>
-    </tr>';
+    <td><button class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.",'".$nom_table."')\">Rejoindre</button></td>
+    </tr>";
   $mess = strtok('&');
  }
 $tables .= '</table>';

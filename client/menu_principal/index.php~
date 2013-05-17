@@ -47,7 +47,7 @@ function rafraichir(){
 		$(document).ready(function(){
 				    setInterval(function(){
 						  rafraichir();						       
-						},2000);
+						},700);
 				  });
 		//-->
 		</script>

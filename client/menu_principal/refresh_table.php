@@ -33,10 +33,10 @@ while($mess != ""){
   $nom_table = strtok('&');
   $tables .= $nom_table.'</td>';
   $num_port = strtok('&');
-  $tables .= '<td>'.strtok('&').' / ';
+  $tables .= '<td style="text-align:center;">'.strtok('&').' / ';
   $nb_j_max = strtok('&');
-  $tables .= $nb_j_max.'</td><td>'.number_format(strtok('&'),2,'.',' ').'</td>
-    <td class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.",'".$nom_table."')\">Rejoindre</td>
+  $tables .= $nb_j_max.'</td><td style="text-align:center;">'.number_format(strtok('&'),2,'.',' ').'</td>
+    <td><button class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.",'".$nom_table."')\">Rejoindre</button></td>
     </tr>";
   $mess = strtok('&');
  }

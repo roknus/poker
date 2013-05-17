@@ -1,4 +1,19 @@
-<?php session_start(); ?>
+<?php
+session_start(); 
+require_once('../../model/connection_db.php');
+function get_money(){
+  $db = connect_db();
+  $request = $db->prepare('SELECT * FROM infoclients WHERE username = :login;');
+  $request->execute(array(
+			  "login"=>$_SESSION["username"]
+			  ));
+  $data = $request->fetch();
+  $money = $data["money"];
+  $money /= 100;
+  $_SESSION["money"] = $money;
+  return $money;
+}
+?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
@@ -56,7 +71,7 @@ function rafraichir(){
 				<div id="menu_principal">                                        
 					<ul id="menu_bar">
 						<li class="menu_pseudo"><?php echo $_SESSION["username"] ?></li>
-						<li><?php echo $_SESSION["money"] ?><Li>
+		                                <li><?php echo get_money(); ?><Li>
 					</ul>
 					<div id="tables_list">
 

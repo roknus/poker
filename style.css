@@ -1,5 +1,6 @@
 html{
 	background-color: black;
+	height:100%;
 }
 
 body{
@@ -17,7 +18,7 @@ body{
 	border-radius: 0px 0px 20px 20px;
 	position: fixed;
 	top: 0px;
-	border: outset 1px black;
+	border-bottom: outset 1px black;
 }
 
 .nav_menu{
@@ -211,7 +212,7 @@ body{
 	color: white;
 	width: 860px;
 	margin: auto;
-	margin-top: 40px;
+	margin-top: 60px;
 	font-family: Lucida;
 }
 
@@ -223,6 +224,40 @@ body{
 	position: fixed;
 	top: 0px;
 	border: outset 1px black;
+	padding:0px;
+}
+
+#table_name{
+    display:inline-block;
+    background-color:black;
+    text-align:center;
+    height:25px;
+    border: inset 2px grey;
+    width: 150px;
+}
+
+#stats{
+    width:240px;
+    padding-left:190px;
+}
+
+#stats table{
+    text-align:center;
+    font-size:14px;
+    width:200px;
+    background-color:black;
+    border: inset 2px grey;
+    border-radius: 0px 0px 10px 10px;
+}
+
+#quit_table_next_round{
+    display:inline-block;
+    font-size:12px;
+}
+
+#quit_table{
+    display:inline-block;
+    padding-top:5px;
 }
 
 .table{
@@ -259,7 +294,7 @@ body{
 }
 
 #player_status_bar{
-	height: 30px;
+	height: 25px;
 	width: 80px;
 	background-color:rgb(30,45,45);	
 	border: 2px inset rgb(30,35,35);
@@ -275,7 +310,7 @@ body{
 	border-radius: 20px;
 }
 
-#pseudo{
+.pseudo{
 	font-size:14px;	
 	text-transform: capitalize;
 }
@@ -290,6 +325,7 @@ body{
 	width: 310px;
 	margin-left: 5px;
 	border: 2px inset black;
+	background-color: rgb(20,25,25);
 }
 
 #chat_box{
@@ -330,7 +366,59 @@ body{
 	border: 2px outset black;
 }
 
-#relance_div{
-	margin: 10px;
+.select table{
+    margin-top:20px;
 }
 
+#select_money{
+    font-size:13px;
+    color:white;
+    width: 250px;
+    margin:auto;
+    margin-top: 40px;
+}
+
+#cave{
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+#relance_div{
+    margin: auto;
+    margin-top:10px;
+    width: 250px;
+}
+
+#absent{
+	text-align:center;
+	font-size:15px;
+	padding: 5px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top:-50px;
+	margin-left:-100px;
+	height:100px;
+	width:200px;
+	border-radius: 5px;	
+	border: 3px outset black;
+	background-color:grey;
+	z-index:101;
+}
+
+#absent div{
+	margin-top:20px;
+	border: 2px inset grey;
+	background-color: rgb(100,100,100);
+}
+
+#absent_background{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height:100%;
+	width:100%;
+	z-index:100;
+	opacity:0.5;
+	background-color:black;
+}

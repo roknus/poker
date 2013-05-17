@@ -10,9 +10,9 @@
 
 require_once("class_client.php");
 
-$C_SERVER_HOSTNAME = 'h17';
+$C_SERVER_HOSTNAME = 'g15';
 $C_SERVER_PORT = '21345';
-$LOCAL_MACHINE_HOSTNAME = 'h16';
+$LOCAL_MACHINE_HOSTNAME = 'g17';
 $LOCAL_MACHINE_PORT = '12349';
 
 //Creer un socket public pour toutes requetes en provenance d'un client
@@ -76,7 +76,6 @@ while(true){
 				$sockets[$username] = $new_socket;
 				$password = strtok('&');
 				$new_client = new Client(strtok($infoclient,'&'),$password,$new_socket,strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'),strtok('&'));
-
 				$clients[$username] = $new_client;
 				echo "Connexion de ".$username." établie avec le serveur principal\n";
 				socket_write($new_client_socket,"connection_accepted");
@@ -152,11 +151,11 @@ while(true){
 						}
 					        case "Tchat":
 						{						   		      
-							$message = $username.':'.strtok('&');
+							$message = $username.'&'.strtok('&');
 							str_replace("{esp}","&",$message);
-							$taille = strlen($message);
+							$taille = strlen($message)+1;
 							echo "Tchat&".$taille.'&'.$message."\n";							;
-							socket_write($clients[$username]->getsocket(),"Tchat&".$taille.'&'.$message);
+							socket_write($clients[$username]->getsocket(),"Tchat&".$taille.'&'.$message.'&');
 							break;
 						}
 					        case "Absen":
@@ -252,10 +251,12 @@ while(true){
 							        $placeD = strtok('&');
 								$placePB = strtok('&');
 								$misePB = strtok('&');
+								$misePB /= 100;
 								$placeGB = strtok('&');
 								$miseGB = strtok('&');
+								$miseGB /= 100;
 								$next = strtok('&');						      
-								$clients[$username]->setdealer('Deale&'.$placeD.'&'.$placePB.'&'.$placeGB.'&'.$next.'&');
+								$clients[$username]->setdealer('Deale&'.$placeD.'&'.$placePB.'&'.$misePB.'&'.$placeGB.'&'.$miseGB.'&'.$next.'&');
 								echo "add dealer\n";
 								break;
 							}
@@ -280,7 +281,7 @@ while(true){
 					                case "Tchat":
 							{
  							        $taille = strtok('&');
-								$pseudo = strtok(':');
+								$pseudo = strtok('&');
 								$message = strtok('&');
 								$clients[$username]->add_message_chat('Tchat&'.$pseudo.'&'.$message.'&');
 								break;
@@ -294,6 +295,7 @@ while(true){
 							}
 					                case "Absen":
 							{
+							echo $username;
 							       $place = strtok('&');
 							       $clients[$username]->add_absent('Absen&'.$place.'&');
 							       break;
@@ -308,7 +310,12 @@ while(true){
 							        $place = strtok('&');
 							        $jetons = strtok('&');
 							        $jetons /= 100;
-						         	$clients[$username]->add_gagnant('Gagna&'.$place.'&'.$jetons.'&');
+								$c1 = strtok('&');
+								$c2 = strtok('&');
+								$c3 = strtok('&');
+								$c4 = strtok('&');
+								$c5 = strtok('&'); 
+						         	$clients[$username]->add_gagnant('Gagna&'.$place.'&'.$jetons.'&'.$c1.'&'.$c2.'&'.$c3.'&'.$c4.'&'.$c5.'&');
 							        break;
 							}
 					                case "Perdu":

@@ -80,8 +80,8 @@ function connexionClient(){
              
 function choixPlace(place){
 	$('.select').empty();
-	$('<input type="number" id="valeur_cave"><input type="button" value="Envoyer" onclick="javascript:ajaxChoixPlace('+place+')" />').appendTo('.select');
-	$('<div id="cave"></div>').prependTo('.select').slider({
+	$('<div id="select_money"><span><strong>Choisissez les jetons que vous désirez jouer</strong></span><br/><div id="cave"></div><div><input type="number" id="valeur_cave" size="16"><input type="button" value="Envoyer" onclick="javascript:ajaxChoixPlace('+place+')" /></div></div>').appendTo('.select');
+	$('#cave').slider({
 		min : mise_min,
 		max : <?php echo $_SESSION["money"]; ?>,
 		value : mise_min,
@@ -121,6 +121,8 @@ function retour_en_jeu(){
 		complete : function(xhr,result){
 			if(result != "success") return;
 			var response = xhr.responseText;
+			$('#absent').remove();
+			$('#absent_background').remove();
 		}
 	});
 }
@@ -155,6 +157,8 @@ function ajaxChoixPlace(place){
 					$('#player'+i).html('');
 				}
 			}
+			var moneyTop = parseFloat($("#top_menu_money").html());
+			$("#top_menu_money").html(Math.round((moneyTop-cave)*100)/100);
 		}
 	});		       
 }	
@@ -188,11 +192,15 @@ function refresh(){
 						joueurs[place][3] = res[i+5];
 						
 						ajout_message_systeme(joueurs[place][0]+" vient de s'asseoir à la place n°"+(place+1)+".");
-
+						
+						if(joueurs[place][0] == "<?php echo $_SESSION["username"]; ?>"){
+						  ma_place = place;
+						  $(".select").empty();
+						}
 						if(joueurs[place][3] == 't'){
 							joueurs[place][2] = 'COUCHER';
 						}
-						$('#player'+place).html('<table><tr><td id="player_status_bar"><span id="player_status"></span></td><td id="timer_box"><span id="timer"></span></td></tr><tr><td colspan="2"><strong><span id="pseudo">'+joueurs[place][0]+' : </span></strong><span id="jetons">'+joueurs[place][1]+'</span><img src="icone_money.png" heigth="12" width="12"/></td></tr><tr><td colspan="2"><span id="mise">'+joueurs[place][2]+'</span></td></tr></table>');
+						$('#player'+place).html('<table><tr><td id="player_status_bar"><span id="player_status"></span></td><td id="timer_box"><span id="timer"></span></td></tr><tr><td colspan="2"><strong><span class="pseudo">'+joueurs[place][0]+' : </span></strong><span id="jetons">'+joueurs[place][1]+'</span><img src="icone_money.png" heigth="12" width="12"/></td></tr><tr><td colspan="2"><span id="mise">'+joueurs[place][2]+'</span></td></tr><tr><td colspan="2" id="cartes_gagnant"></td></tr></table>');
 					   
 						if( dealer == place){
 							$('<img src="couronne.png" height="20" width="35" />').appendTo('#player'+dealer+' #player_status');
@@ -202,10 +210,6 @@ function refresh(){
 						}
 						if( placeGB == place){
 							$('<img src="gb.png" height="20" width="30" />').appendTo('#player'+placeGB+' #player_status');
-						}
-						if( joueurs[place][0] == <?php echo '"'.$_SESSION["username"].'"'; ?> ){
-							$('.select').empty();
-							$('.select').html('<table><tr><td><input type="button" value="Parole" onclick="javascript:miser(0)"/></td><td><input type="button" value="Suivre" onclick="javascript:miser(1)"/></td><td><input type="button" value="Relancer" onclick="javascript:miser(2)"/></td><td><input type="button" value="Coucher" onclick="javascript:miser(-1)"/></td></tr><tr><td><a href="javascript:quitterTableNext()">Quitter la table prochain tour</a></td></tr></table><div id="relance_div" style="display:none"><div id="slider"></div><div id="valeur_relance"></div></div>');
 						}
 						var j;
 						nb_joueurs = nb_joueurs +1;
@@ -222,6 +226,7 @@ function refresh(){
 				   	
 						clearInterval(interval);
 						$("#player"+suivant+" #timer").html("");
+						$("#player"+suivant+" #timer_box").css("background-color","rgb(30,45,45)");
 						time = 20;
 					   
 						var place = parseInt(res[i+1]);
@@ -239,31 +244,56 @@ function refresh(){
 						else{
 							joueurs[place][2] = Math.round((joueurs[place][2]+mise)*100)/100;
 							joueurs[place][1] = Math.round((joueurs[place][1]-mise)*100)/100;
-
-							if(joueurs[place][2] == mise_suivre){							  
-							  ajout_message_systeme(joueurs[place][0]+" a suivi.");
+							
+							if(joueurs[place][1] == 0){//Si all-in
+							  ajout_message_systeme(joueurs[place][0]+" est tapis.");
+							  $('#player'+place+' #mise').html("TAPIS");
+							  if(mise > mise_suivre){//Si le all-in est superieur a la mise minimum pour suivre
+							    mise_suivre = joueurs[place][2];
+							  }
 							}
-							else{							  
-							  ajout_message_systeme(joueurs[place][0]+" a relancé de "+(joueurs[place][2]-mise_suivre)+".");
+							else{
+							  if(joueurs[place][2] == mise_suivre){							  
+							    ajout_message_systeme(joueurs[place][0]+" a suivi.");
+							  }
+							  else{							  
+							    ajout_message_systeme(joueurs[place][0]+" a relancé de "+(Math.round((joueurs[place][2]-mise_suivre)*100)/100)+".");
+							  }
+							  $('#player'+place+' #mise').html(joueurs[place][2]);
+							  mise_suivre = joueurs[place][2];
 							}
-
-							$('#player'+place+' #mise').html(joueurs[place][2]);
 							$('#player'+place+' #jetons').html(joueurs[place][1]);
 							pot = Math.round((pot + mise)*100)/100;
 							$('.pot').html(pot);
-							mise_suivre = joueurs[place][2];
 						}   							    
 						$("#player"+suivant+" #timer").html(time);
 						interval = setInterval(function(interval){
 							$("#player"+suivant+" #timer").html(time-1);
 							time= time-1;
+							if(time == 5){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(70,45,45)");
+							}
+							if(time == 4){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(110,35,35)");
+							}
+							if(time == 3){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(150,25,25)");
+							}
+							if(time == 2){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(200,15,15)");
+							}
+							if(time == 1){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(240,5,5)");
+							}
 							if(time == 0){
 							        if(ma_place == suivant){
 								  absent();							    
 								}
 								clearInterval(interval);
-								$("#player"+suivant+" #timer").html("");
-								time = 21;
+								if(suivant != -1){
+								  $("#player"+suivant+" #timer").html("");
+								  time = 21;
+								}
 							}
 						},1000);
 					   
@@ -290,8 +320,10 @@ function refresh(){
 						$('#player'+placePB+' #player_status').html('');
 						dealer = res[i+1];
 						placePB = res[i+2];
-						placeGB = res[i+3];
-						suivant = res[i+4];
+						misePB = parseFloat(res[i+3]);
+						placeGB = res[i+4];
+						miseGB = parseFloat(res[i+5]);						
+						suivant = res[i+6];
 
 						ajout_message_systeme("Let's go pour le poker :) !");
 					   
@@ -304,10 +336,10 @@ function refresh(){
 							$('#player'+j+' #mise').html(joueurs[j][2]);
 						}
 					   
-						joueurs[placeGB][2] = mise_min;
-						joueurs[placeGB][1] = (joueurs[placeGB][1] - mise_min);
-						joueurs[placePB][2] = (mise_min/2.0);
-						joueurs[placePB][1] = (joueurs[placePB][1] - mise_min/2.0);
+						joueurs[placeGB][2] = miseGB;
+						joueurs[placeGB][1] = (joueurs[placeGB][1] - miseGB);
+						joueurs[placePB][2] = misePB;
+						joueurs[placePB][1] = (joueurs[placePB][1] - misePB);
 						$('#player'+placePB+' #mise').html(joueurs[placePB][2]);
 						$('#player'+placePB+' #jetons').html(joueurs[placePB][1]);
 						$('#player'+placeGB+' #mise').html(joueurs[placeGB][2]);
@@ -319,44 +351,64 @@ function refresh(){
 						$('#board4').attr('src','cards/def.png');
 						$('#board5').attr('src','cards/def.png');
 						board = 1;
+
+						$("#carte1").attr('src','cards/def.png');
+					        $("#carte2").attr('src','cards/def.png');
+					        $(".pot").html("0");
 									   
-						pot = mise_min + (mise_min/2);
+						pot = misePB + miseGB;
 						$('.pot').html(pot);
 					   
 						mise_suivre = joueurs[placeGB][2];
 					   
-						$("#player"+placePB+" #timer").html(time);
+						$("#player"+suivant+" #timer").html(time);
 						interval = setInterval(function(interval){
-							$("#player"+placePB+" #timer").html(time-1);
+							$("#player"+suivant+" #timer").html(time-1);
 							time= time-1;
+							if(time == 5){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(70,45,45)");
+							}
+							if(time == 4){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(110,35,35)");
+							}
+							if(time == 3){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(150,25,25)");
+							}
+							if(time == 2){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(200,15,15)");
+							}
+							if(time == 1){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(240,5,5)");
+							}
 							if(time == 0){
 							  if(ma_place == suivant){
 							    absent();							    
 							  }
 								clearInterval(interval);
-								$("#player"+placePB+" #timer").html("");
+								$("#player"+suivant+" #timer").html("");
 								time = 21;
 							}
 						},1000);
 				   
-						i = i+5;							    
+						i = i+7;							    
 					}
 					if(res[i] == "Carte"){
 						//Si le joueur se reconnecte on recupere sa place
-						if(ma_place == -1){
-							ma_place = res[i+1];
+					        if(ma_place == res[i+1]){							
+							$('.select').empty();
+							$('.select').html('<table><tr><td><img onclick="javascript:miser(0)" src="button_parole.png" width="73" height="35" style="cursor:pointer;"/></td><td><img src="button_suivre.png" style="cursor:pointer;" width="73" height="35" onclick="javascript:miser(1)"/></td><td><img src="button_relancer.png" style="cursor:pointer;" width="73" height="35" onclick="javascript:miser(2)"/></td><td><img src="button_coucher.png" style="cursor:pointer;" width="73" height="35" onclick="javascript:miser(-1)"/></td></tr></table><div id="relance_div" style="display:none"><div id="slider"></div><div id="valeur_relance"></div></div>');					       
 							var j;
 							//Si il re?oit ses cartes alors il est joueur et on d?sacive la possibilit? de s'assoir
 							for(j=0;j<10;j++){
 								if($('#player'+j).html() == '<strong>Choisissez votre place.</strong>'){
 									$('#player'+j).html('');
 								}
-							}
+							}													
+							carte1 = res[i+2];
+							$("#carte1").attr('src','cards/'+carte1+'.png');
+							carte2 = res[i+3];
+							$("#carte2").attr('src','cards/'+carte2+'.png');
 						}
-						carte1 = res[i+2];
-						$("#carte1").attr('src','cards/'+carte1+'.png');
-						carte2 = res[i+3];
-						$("#carte2").attr('src','cards/'+carte2+'.png');
 						i = i+4;
 					}
 					if(res[i] == "Milie"){								  
@@ -372,43 +424,75 @@ function refresh(){
 						interval = setInterval(function(interval){
 							$("#player"+suivant+" #timer").html(time-1);
 							time= time-1;
+							if(time == 5){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(70,45,45)");
+							}
+							if(time == 4){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(110,35,35)");
+							}
+							if(time == 3){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(150,25,25)");
+							}
+							if(time == 2){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(200,15,15)");
+							}
+							if(time == 1){
+								$("#player"+suivant+" #timer_box").css("background-color","rgb(240,5,5)");
+							}
 							if(time == 0){
 							        if(ma_place == suivant){
-								  absent();;							    
+								  absent();							    
 								}
 								clearInterval(interval);
 								$("#player"+suivant+" #timer").html("");
 								time = 21;
 							}
 						},1000);
+
+						var j;
+						for(j=0;j<10;j++){
+						  joueurs[j][2] = 0.0;
+						  $('#player'+j+' #mise').html("0");
+						}
+						mise_suivre = 0.0;
+
 						i = i+2;
 					}
 					if(res[i] == "Gagna"){								  
 						clearInterval(interval);
 						var place_gagnant = res[i+1];
 						var new_jetons = parseFloat(res[i+2]);
+						var carte1 = res[i+3];
+						var carte2 = res[i+4];
+						var carte3 = res[i+5];
+						var carte4 = res[i+6];
+						var carte5 = res[i+7];
 									  
-						ajout_message_systeme(joueurs[place_gagnant][0]+" a gagné "+(new_jetons - joueurs[place_gagnant][1])+".");
- 
-						joueurs[place_gagnant][1] = new_jetons;
-						$('#player'+place_gagnant+' #jetons').html(joueurs[place_gagnant][1]);
-						$('#player'+place_gagnant+' #mise').html("COUCHER");
-						$("#carte1").attr('src','cards/def.png');
-						$("#carte2").attr('src','cards/def.png');
-						$(".pot").html("0");
+						ajout_message_systeme(joueurs[place_gagnant][0]+" a récuperé "+(new_jetons - joueurs[place_gagnant][1])+" du pot.");
 						
-						i = i+3;
+						joueurs[place_gagnant][1] = new_jetons;
+						
+						$('#player'+place_gagnant+' #jetons').html(joueurs[place_gagnant][1]);
+					        $('#player'+place_gagnant+' #mise').html("");
+						
+						var j;
+						for(j=3;j<8;j++){
+						  $('#player'+place_gagnant+' #cartes_gagnant').append('<img src="cards/'+res[i+j]+'.png" width="20" height="30"/>');
+						}
+
+						i = i+8;
 					}
 					if(res[i] == "Perdu"){								  
 						clearInterval(interval);
 						var place_perdant = res[i+1];
 						var new_jetons = parseFloat(res[i+2]);
 
-						ajout_message_systeme(joueurs[place_perdant][0]+" a gagné "+(new_jetons - joueurs[place_perdant][1])+".");
+						ajout_message_systeme(joueurs[place_perdant][0]+" a récuperé "+(new_jetons - joueurs[place_perdant][1])+" du pot.");
 	
 						joueurs[place_perdant][1] = new_jetons;
 						$('#player'+place_perdant+' #jetons').html(joueurs[place_perdant][1]);
-						i = i+3;						  
+
+						i = i+8;						  
 					}
 					if(res[i] == "JQuit"){
 						var joueur_quit = res[i+1];
@@ -446,10 +530,10 @@ function refresh(){
 				          
 					  ajout_message_systeme(joueurs[place][0]+" est absent.");
 
-					  $("#player"+place+" div").attr("background-color","red");
+					  $("#player"+place).attr("background-color","red");
 
-					  if( place == ma_place){
-					    alert("Pouquoi t'as pas joué petit con !");
+					  if(place == ma_place){
+					    $('<div id="absent"><div>Vous n\'avez pas joué dans le temps qui vous était imparti</div><br/><input type="button" value="Revenir sur la table" onclick="javascript:retour_en_jeu();"/></div><div id="absent_background"></div>').appendTo("html");
 					  }
 					  
 					  i = i+2;
@@ -470,16 +554,26 @@ function miser(mise){
 		ajax_mise(mise);
 	}
 	else if(mise == 1){
-		ajax_mise(Math.round((mise_suivre - joueurs[ma_place][2])*100)/100);
+	  var sui = Math.round((mise_suivre - joueurs[ma_place][2])*100)/100;
+	  if(sui < 0){
+	    ajax_mise(joueurs[ma_place][1]);
+	  }
+	  else{
+	    ajax_mise(sui);
+	  }
 	}
 	else if(mise == 2){
 		var min;
-		if((mise_suivre - joueurs[ma_place][2]) > mise_min){
-			min = (mise_suivre - joueurs[ma_place][2]);
+		min = (mise_suivre*2 - joueurs[ma_place][2]);
+		if(min < mise_min){
+		  if(joueurs[ma_place][1] < mise_min){
+		    min = joueurs[ma_place][1];
+		  }
+		  else{
+		    min = mise_min;
+		  }
 		}
-		else{
-			min = mise_min;
-		}
+		
 		if($("#relance_div").css('display') == "none"){
 			$('#valeur_relance').html(min);
 			$("#slider").slider({
@@ -495,6 +589,7 @@ function miser(mise){
 				}
 			});
 			$("#relance_div").slideDown();
+			$("#valeur_relance").html($(this).slider("value"));	
 		}
 		else{
 			ajax_mise($("#slider").slider("value"));
@@ -519,7 +614,7 @@ function ajax_mise(mise){
 }
 
 function ajout_message_systeme(message){
-  $('<span class="message_systeme"><strong>[Systeme]</strong></span><span class="message_chat_systeme"> : '+message+'<br/></span>').appendTo('#chat_box');
+  $('<span class="message_systeme"><strong>[Système]</strong></span><span class="message_chat_systeme"> : '+message+'<br/></span>').appendTo('#chat_box');
   var scroll = $("#chat_box").scrollTop();
   $("#chat_box").scrollTop(scroll +100);
 }
@@ -539,8 +634,23 @@ function ajout_message_systeme(message){
 		//-->
 		</script>
 		<div id="top_menu_table">
-                       <?php echo $nom_table; ?>
-		       <div style="text-align:right;margin-right:10px;"><a href="javascript:retour_en_jeu()">Retour</a><a href="../menu_principal"><img src="close_icone.png" height="25" width="25"/></a></div>
+		     <table>
+			<tr>
+				<td id="table_name"><?php echo $nom_table; ?></td>
+				<td id="stats">
+				    <table>	
+				    	<tr>
+						<td class="pseudo"><strong><?php echo $_SESSION["username"]; ?></strong></td>
+					</tr>
+					<tr>
+						<td id="top_menu_money"><?php echo $_SESSION["money"]; ?></td>
+					</tr>
+				    </table>
+				</td>
+				<td id="quit_table_next_round"><button value=" href="javascript:quitterTableNext()">Spectateur à la prochaine manche</button></td>
+				<td id="quit_table"><a href="../menu_principal"><img src="close_icone.png" width="40" height="23"/></a></td>
+			</tr>
+		     </table>
                 </div>
 		<div id="table_page">
 			<div>

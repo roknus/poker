@@ -39,6 +39,6 @@
 		$_SESSION["city"] = $info["city"];
 		$_SESSION["zipcode"] = $info["zipcode"];
 		$_SESSION["country"] = $info["country"];
-		$_SESSION["money"] = $info["money"];
+		$_SESSION["money"] = $info["money"]/100;
 	}
 
