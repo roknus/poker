@@ -19,7 +19,7 @@ function get_money(){
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
     	<head>
 	      	<title>Poker en ligne</title>
-      		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+      		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" href="/~flucia/style.css" />
 		<link rel="stylesheet" href="/~flucia/jquery-ui-1.10.2.custom/development-bundle/themes/ui-darkness/jquery.ui.all.css" />
 	

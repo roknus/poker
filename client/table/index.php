@@ -19,7 +19,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 	<head>
         	<title>Poker en ligne</title>
-        	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" href="/~flucia/style.css" />
 		<link rel="stylesheet" href="/~flucia/jquery-ui-1.10.2.custom/development-bundle/themes/ui-darkness/jquery.ui.all.css" />
 	
@@ -80,7 +80,7 @@ function connexionClient(){
              
 function choixPlace(place){
 	$('.select').empty();
-	$('<div id="select_money"><span><strong>Choisissez les jetons que vous désirez jouer</strong></span><br/><div id="cave"></div><div><input type="number" id="valeur_cave" size="16"><input type="button" value="Envoyer" onclick="javascript:ajaxChoixPlace('+place+')" /></div></div>').appendTo('.select');
+	$('<div id="select_money"><span><strong>Choisissez les jetons que vous désirez jouer</strong></span><br/><div id="cave"></div><div><input type="number" id="valeur_cave" size="10"><input type="button" value="Envoyer" onclick="javascript:ajaxChoixPlace('+place+')" /></div></div>').appendTo('.select');
 	$('#cave').slider({
 		min : mise_min,
 		max : <?php echo $_SESSION["money"]; ?>,
@@ -157,8 +157,6 @@ function ajaxChoixPlace(place){
 					$('#player'+i).html('');
 				}
 			}
-			var moneyTop = parseFloat($("#top_menu_money").html());
-			$("#top_menu_money").html(Math.round((moneyTop-cave)*100)/100);
 		}
 	});		       
 }	
@@ -195,7 +193,9 @@ function refresh(){
 						
 						if(joueurs[place][0] == "<?php echo $_SESSION["username"]; ?>"){
 						  ma_place = place;
-						  $(".select").empty();
+						  $(".select").empty();						  
+						  var moneyTop = parseFloat($("#top_menu_money").html());
+						  $("#top_menu_money").html(Math.round((moneyTop-joueurs[place][1])*100)/100);
 						}
 						if(joueurs[place][3] == 't'){
 							joueurs[place][2] = 'COUCHER';
@@ -235,11 +235,11 @@ function refresh(){
 
 						if(mise == 0){
 						  ajout_message_systeme(joueurs[place][0]+" a dit parole.");
-							$('#player'+place+' #mise').html('PAROLE');							      
+							$('#player'+place+' #mise').html('PAROLE');			      
 						}
 						else if(mise == -1){
 						  ajout_message_systeme(joueurs[place][0]+" s'est couché.");
-							$('#player'+place+' #mise').html('COUCHER');							      
+							$('#player'+place+' #mise').html('COUCHER');			      
 						}
 						else{
 							joueurs[place][2] = Math.round((joueurs[place][2]+mise)*100)/100;
@@ -311,6 +311,10 @@ function refresh(){
 					  i = i+3;
 					}
 					if(res[i] == "Deale"){
+						for(var k=0;k<10;k++)
+						{
+							$('#player'+k+' #cartes_gagnant').empty();
+						}
 						clearInterval(interval);
 						$("#player"+suivant+" #timer").html("");
 						time = 20;
@@ -328,7 +332,7 @@ function refresh(){
 						ajout_message_systeme("Let's go pour le poker :) !");
 					   
 						$('<img src="couronne.png" height="20" width="35" />').appendTo('#player'+dealer+' #player_status');
-						$('<img src="pb.png" height="20" width="30" />').appendTo('#player'+placePB+' #player_status');				    
+						$('<img src="pb.png" height="20" width="30" />').appendTo('#player'+placePB+' #player_status');    
 						$('<img src="gb.png" height="20" width="30" />').appendTo('#player'+placeGB+' #player_status');
 						var j;
 						for(j=0;j<10;j++){
@@ -340,10 +344,10 @@ function refresh(){
 						joueurs[placeGB][1] = (joueurs[placeGB][1] - miseGB);
 						joueurs[placePB][2] = misePB;
 						joueurs[placePB][1] = (joueurs[placePB][1] - misePB);
-						$('#player'+placePB+' #mise').html(joueurs[placePB][2]);
-						$('#player'+placePB+' #jetons').html(joueurs[placePB][1]);
-						$('#player'+placeGB+' #mise').html(joueurs[placeGB][2]);
-						$('#player'+placeGB+' #jetons').html(joueurs[placeGB][1]);
+						$('#player'+placePB+' #mise').html((Math.round(joueurs[placePB][2]*100))/100);
+						$('#player'+placePB+' #jetons').html((Math.round(joueurs[placePB][1]*100))/100);
+						$('#player'+placeGB+' #mise').html((Math.round(joueurs[placeGB][2]*100))/100);
+						$('#player'+placeGB+' #jetons').html((Math.round(joueurs[placeGB][1]*100))/100);
 								   
 						$('#board1').attr('src','cards/def.png');
 						$('#board2').attr('src','cards/def.png');
@@ -468,7 +472,7 @@ function refresh(){
 						var carte4 = res[i+6];
 						var carte5 = res[i+7];
 									  
-						ajout_message_systeme(joueurs[place_gagnant][0]+" a récuperé "+(new_jetons - joueurs[place_gagnant][1])+" du pot.");
+						ajout_message_systeme(joueurs[place_gagnant][0]+" a récuperé "+Math.round((new_jetons - joueurs[place_gagnant][1])*100)/100+" du pot.");
 						
 						joueurs[place_gagnant][1] = new_jetons;
 						
@@ -476,8 +480,10 @@ function refresh(){
 					        $('#player'+place_gagnant+' #mise').html("");
 						
 						var j;
-						for(j=3;j<8;j++){
-						  $('#player'+place_gagnant+' #cartes_gagnant').append('<img src="cards/'+res[i+j]+'.png" width="20" height="30"/>');
+						if(res[i+3] != -1){
+							    for(j=3;j<8;j++){
+						  	    $('#player'+place_gagnant+' #cartes_gagnant').append('<img src="mini_cards/'+res[i+j]+'.png" width="20" height="30"/>');
+							    }
 						}
 
 						i = i+8;
@@ -487,7 +493,7 @@ function refresh(){
 						var place_perdant = res[i+1];
 						var new_jetons = parseFloat(res[i+2]);
 
-						ajout_message_systeme(joueurs[place_perdant][0]+" a récuperé "+(new_jetons - joueurs[place_perdant][1])+" du pot.");
+						ajout_message_systeme(joueurs[place_perdant][0]+" a récuperé "+Math.round((new_jetons - joueurs[place_perdant][1])*100)/100+" du pot.");
 	
 						joueurs[place_perdant][1] = new_jetons;
 						$('#player'+place_perdant+' #jetons').html(joueurs[place_perdant][1]);
@@ -504,6 +510,11 @@ function refresh(){
 						joueurs[joueur_quit][1] = 0.0;
 						joueurs[joueur_quit][2] = 0.0;
 						joueurs[joueur_quit][3] = "";
+						if(ma_place == joueur_quit){
+						  $("#carte1").attr('src','cards/def.png');
+						  $("#carte2").attr('src','cards/def.png');
+						  $('.select').empty();
+						}
 						if(ma_place == -1){	
 						  var j;
 						  for(j=0;j<10;j++){
@@ -533,7 +544,7 @@ function refresh(){
 					  $("#player"+place).attr("background-color","red");
 
 					  if(place == ma_place){
-					    $('<div id="absent"><div>Vous n\'avez pas joué dans le temps qui vous était imparti</div><br/><input type="button" value="Revenir sur la table" onclick="javascript:retour_en_jeu();"/></div><div id="absent_background"></div>').appendTo("html");
+					    $('<div id="absent"><div>Vous n\'avez pas joué dans le temps qui vous était imparti</div><input type="button" value="Revenir sur la table" onclick="javascript:retour_en_jeu();"/></div><div id="absent_background"></div>').appendTo("html");
 					  }
 					  
 					  i = i+2;
@@ -630,6 +641,11 @@ function ajout_message_systeme(message){
 				setInterval(function(){
 					refresh();
 				},300);
+				$("#chat_input").bind('keydown',function(event){
+					if(event.keyCode == 13){
+						envoyer_message($('#chat_input').val());
+					}
+				});
 			});
 		//-->
 		</script>
@@ -637,17 +653,9 @@ function ajout_message_systeme(message){
 		     <table>
 			<tr>
 				<td id="table_name"><?php echo $nom_table; ?></td>
-				<td id="stats">
-				    <table>	
-				    	<tr>
-						<td class="pseudo"><strong><?php echo $_SESSION["username"]; ?></strong></td>
-					</tr>
-					<tr>
-						<td id="top_menu_money"><?php echo $_SESSION["money"]; ?></td>
-					</tr>
-				    </table>
+				<td id="stats"><strong><?php echo $_SESSION["username"]; ?></strong>
 				</td>
-				<td id="quit_table_next_round"><button value=" href="javascript:quitterTableNext()">Spectateur à la prochaine manche</button></td>
+				<td id="quit_table_next_round"><button onclick="javascript:quitterTableNext()">Spectateur à la prochaine manche</button></td>
 				<td id="quit_table"><a href="../menu_principal"><img src="close_icone.png" width="40" height="23"/></a></td>
 			</tr>
 		     </table>
@@ -674,7 +682,7 @@ function ajout_message_systeme(message){
 									<td><div class="pot_div"><span>Pot</span><br/><span class="pot"></span></div></td>
 									<td colspan="3" class="board">
 										<table id="board">
-											<tr>												   
+											<tr>						   
 												<td>
 													<img src="cards/carte.png" height="90" width="60"/>
 												</td>
@@ -716,8 +724,7 @@ function ajout_message_systeme(message){
 						<td>
 							<div class="chat">
                                                             <div id="chat_box"></div>							    
-							    <input id="chat_input" type="text" size="25" />
-                                                            <input type="button" onclick="javascript:envoyer_message($('#chat_input').val())" value="Envoyer" />                                                            
+							    <textarea id="chat_input"></textarea>          
 							</div>
 						</td>
 						<td>

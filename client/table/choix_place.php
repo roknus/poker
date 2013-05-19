@@ -21,4 +21,5 @@ if(socket_connect($socket_public,$LOCAL_MACHINE,$LOCAL_MACHINE_PORT) == false){
   break;
  }
 socket_write($socket_public,$_SESSION["username"]."&jouer&".$place."&".$cave."&");
+$_SESSION["money"] -= $cave;
 socket_close($socket_public);
