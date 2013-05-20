@@ -31,28 +31,28 @@ function get_money(){
 
 		<script type="text/javascript">
 		<!--
-                        function rejoindreTable(num_port,nb_j_max,nom_table){
-                             $(location).attr('href',"/~flucia/client/table/index.php?num_port="+num_port+"&nb_j_max="+nb_j_max+"&nom_table="+nom_table);	    
+                        function rejoindreTable(num_port,nb_j_max,nom_table,style_jeu){
+                             $(location).attr('href',"/~flucia/client/table/index.php?num_port="+num_port+"&nb_j_max="+nb_j_max+"&nom_table="+nom_table+"&style="+style_jeu);	    
 			}
 
-function rafraichir(){
-  $.ajax({
-    url : "/~flucia/client/menu_principal/refresh_table.php",
-	complete : function(xhr,result){
-	if(result != "success") return;
-	var response = xhr.responseText;
-	$("#tables_list").empty();
-	$(response).appendTo("#tables_list");
+			function rafraichir(){
+  				 $.ajax({
+					 url : "/~flucia/client/menu_principal/refresh_table.php",
+					 complete : function(xhr,result){
+					 	  if(result != "success") return;
+						  var response = xhr.responseText;
+						  $("#tables_list").empty();
+						  $(response).appendTo("#tables_list");
 						  
-	var tr = $("#tables_list").find("tr");
-	$(tr).each(function(index){
-		     if(index % 2 == 0){
-		       $(tr).eq(index).css("background-color","rgb(30,35,35)");
-		     }
-		   });
-      }
-    });
-}
+						  var tr = $("#tables_list").find("tr");
+						  $(tr).each(function(index){
+							if(index % 2 == 0){
+		       				  	   $(tr).eq(index).css("background-color","rgb(30,35,35)");
+		     				  	}
+		   				  });
+      					}
+   				});
+			}
 		//-->
 		</script>
 	</head>
@@ -60,12 +60,14 @@ function rafraichir(){
 		<script type="text/javascript">
 		<!--
 		$(document).ready(function(){
-				    setInterval(function(){
-						  rafraichir();						       
-						},700);
-				  });
+					setInterval(function(){
+						rafraichir();						       
+					},
+					700);
+			});
 		//-->
 		</script>
+
         	<div class="page">
 			<div class="wrapper">
 				<div id="menu_principal">                                        
@@ -73,9 +75,7 @@ function rafraichir(){
 						<li class="menu_pseudo"><?php echo $_SESSION["username"] ?></li>
 		                                <li><?php echo get_money(); ?><Li>
 					</ul>
-					<div id="tables_list">
-
-					</div>
+					<div id="tables_list"></div>
 				</div>
 			</div>
         	</div>

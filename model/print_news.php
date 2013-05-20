@@ -6,7 +6,7 @@
 			echo
 			'<table class="tborder">
 				<tr>
-					<td class="ttitle"><strong>'.$data["title"].'</strong><span style="text-align:right;position:relative;left:500px;">'.$data["author"].' '.date("h:i d/m/y", strtotime($data["creation_date"])).'</span></td>
+					<td class="ttitle"><strong>'.$data["title"].'</strong><span style="text-align:right;position:relative;left:450px;">'.$data["author"].' '.date("h:i d/m/y", strtotime($data["creation_date"])).'</span></td>
 				</tr>
 				<tr>
 					<td class="panelsurround" align="center">

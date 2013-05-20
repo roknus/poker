@@ -15,7 +15,7 @@
 		
 		<div class="page">
 			<div class="wrapper">
-				<p style="text-align:center;"><img src="/news.jpg"/></p>
+				<p style="text-align:center;"><img src="/~flucia/News.jpg"/></p>
 				<?php print_news(); ?>
 			</div>
 		</div>

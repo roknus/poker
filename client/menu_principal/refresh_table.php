@@ -25,22 +25,43 @@ $mess = strtok($res,'&');
 $tables = '<table><tr>
                      <th id="nom_table_col">Nom Table</th>
                      <th id="nb_j_col">Nombre de joueurs</th>					
-           	     <th id="mise_min_col">Mise minimum</th>
+           	     <th id="mise_min_col">Mise minimum / Cave S&G</th>
                      <th id="boutton_col"></th>
                    </tr>';
-while($mess != ""){  
+/*while($mess != ""){  
   $tables .= '<tr><td>';
   $nom_table = strtok('&');
   $tables .= $nom_table.'</td>';
   $num_port = strtok('&');
   $tables .= '<td style="text-align:center;">'.strtok('&').' / ';
   $nb_j_max = strtok('&');
-  $tables .= $nb_j_max.'</td><td style="text-align:center;">'.number_format(strtok('&'),2,'.',' ').'</td>
-    <td><button class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.",'".$nom_table."')\">Rejoindre</button></td>
-    </tr>";
+  $tables .= $nb_j_max.'</td><td style="text-align:center;">'.number_format(strtok('&'),2,'.',' ').'</td>';  
+  $style_jeu = strtok('&');
+  $tables .= '<td><button class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nb_j_max.',\''.$nom_table.'\','.$style_jeu.')">Rejoindre</button></td></tr>';
   $mess = strtok('&');
  }
+*/
+while($mess != "")
+{
+  $nom_table = strtok('&');
+  $num_port = strtok('&');
+  $nombre_joueurs = strtok('&');
+  $nombre_joueurs_max = strtok('&');
+  $mise_min = number_format(strtok('&'),2,'.',' ');
+  $style_jeu = strtok('&');
+  if($style_jeu == 1)
+  {
+	$nom_table .= ' (Sit and Go)';
+  }
+  
+  $tables .= '<tr><td>'.$nom_table.'</td>
+		<td style="text-align:center;">'.$nombre_joueurs.' / '.$nombre_joueurs_max.'</td>
+		<td style="text-align:center;">'.$mise_min.'</td>
+		<td><button class="button_connect" onclick="javascript:rejoindreTable('.$num_port.','.$nombre_joueurs_max.',\''.$nom_table.'\','.$style_jeu.')">Rejoindre</button></td></tr>';
+  $mess = strtok('&');
+}
+
 $tables .= '</table>';
- echo $tables;
+echo $tables;
 
 socket_close($socket_public);
