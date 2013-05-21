@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
     <head>
         <title>Poker en ligne</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<link rel="stylesheet" href="/~flucia/style.css" />
 		
     </head>
@@ -27,7 +27,7 @@
 							<tr>
 								<td class="panelsurround" align="center">
 									<div class="panel">	
-										<p>Vous êtes connecte !</p>
+										<p>Vous etes connecte !</p>
 									</div>
 								</td>
 							</tr>

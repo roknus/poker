@@ -11,7 +11,7 @@ require_once("../../model/connection_db.php");
  Ce fichier contient ...
  ======================================================================*/ 
 
-$LOCAL_MACHINE = 'roknus';
+$LOCAL_MACHINE = 'si95';
 $LOCAL_MACHINE_PORT = 12349;
 
 $socket_public = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
@@ -33,8 +33,9 @@ $res = socket_read($socket_public,255);
 
 if($res == 'connection_accepted' AND !(isset($_SESSION["username"]))){
         activate_session($username);
-	$_SESSION["server_hostname"] = $LOCAL_MACHINE;
 }
+
+$_SESSION["server_hostname"] = $LOCAL_MACHINE;
 
 echo $res;
 socket_close($socket_public);

@@ -75,6 +75,7 @@ function refresh(){
 			     */
 			    joueurs[place][2] = 'COUCHER';
 			}
+
 			/**
 			 * Créer la case du joueur avec son pseudo, ses jetons et sa mise à la place qu'il a choisit
 			 */
@@ -96,11 +97,7 @@ function refresh(){
 			    $('<img src="gb.png" height="20" width="30" />').appendTo('#player'+placeGB+' #player_status');
 			}
 			nb_joueurs = nb_joueurs +1;
-			
-			if(nb_joueurs >= 2)
-			{
-			    ajout_message_systeme("La partie va commencer");
-			}
+
 			if(place == ma_place || nb_joueurs >= nb_j_max)
 			{
 			    /**

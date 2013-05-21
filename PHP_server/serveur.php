@@ -10,9 +10,9 @@
 
 require_once("class_client.php");
 
-$C_SERVER_HOSTNAME = '192.168.0.12';
+$C_SERVER_HOSTNAME = 'si96';
 $C_SERVER_PORT = '21345';
-$LOCAL_MACHINE_HOSTNAME = 'roknus';
+$LOCAL_MACHINE_HOSTNAME = 'si95';
 $LOCAL_MACHINE_PORT = '12349';
 
 //Creer un socket public pour toutes requetes en provenance d'un client

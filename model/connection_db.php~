@@ -3,12 +3,12 @@
 	
 		try
 		{
-			$db = new PDO('mysql:host=venus;dbname=flucia','flucia', 'flucia');
+			$db = new PDO('mysql:host=localhost;dbname=pokerl3','root', 'azerty');
 		}
 		catch (Exception $e)
 		{
 		  die('Erreur : ' . $e->getMessage());
 		}
 	       
-		return $db
+		return $db;
 	}

@@ -3,7 +3,7 @@
 	
 		try
 		{
-			$db = new PDO('mysql:host=localhost;dbname=pokerl3','root', 'azerty');
+			$db = new PDO('mysql:host=venus;dbname=flucia','flucia', 'flucia');
 		}
 		catch (Exception $e)
 		{
